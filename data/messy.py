@@ -4,13 +4,14 @@ import numpy as np
 
 # Read dataset
 df = pd.read_csv('uci_heart_disease.csv')
+df = df.astype(object)
 
 # Random parameters
 rows, cols = df.shape
 num_of_messy_rows = random.randint(1, max(1, rows // 10))  # Ensure at least 1 messy row
 max_num_of_missing_values = random.randint(0, 11)
 max_num_of_duplicate_rows = random.randint(0, 5)
-random_values = [10, 9345, 123, 956, 23.0, 83, 0.369, 3.1415259, 1.2, 69]
+random_values = [10, 100, 123, 9, 23.0, 83, 0.369, 3.14, 1.2, 69]
 random_cells = []
 duplicated_rows = []
 
