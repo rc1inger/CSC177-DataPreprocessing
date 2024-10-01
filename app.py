@@ -1,5 +1,9 @@
 import pandas as pd
+import numpy as np
+
 data = pd.read_csv('steam_app_data.csv')
+
+# Data Quality Issues
 data.columns = ['type', 'name', 'steam_appid', 'required_age',
                 'is_free', 'controller_support', 'dlc',
                 'detailed_description', 'about_the_game',
@@ -23,7 +27,7 @@ dlc - unsure what this info is because it shows a string of numbers. Maybe a ste
 detailed_description - not needed for analytics
 about_the_game - not needed for analytics
 short_description - not needed for analytics
-full_game - attribute added by mistake
+fullgame - attribute added by mistake
 header_image - not needed for analytics
 website - not needed for analytics
 pc_requirements - ### CAN THIS BE CLEANED UP? ###
@@ -57,11 +61,10 @@ data = data.drop(['type', 'controller_support', 'dlc',
              'achievements', 'support_info', 'background',
              'content_descriptors'
 ],axis=1)
+
 # using f string to format since Python 3.6
 print(f'Number of instances = {data.shape[0]}')
 print(f'Number of attributes = {data.shape[1]}')
-
-data.head()
 
 ''' We are keeping these attributes
 name
@@ -77,4 +80,12 @@ categories
 genres
 release_date
 '''
+
+# Missing Values
+# Replace blank cells with NaN
+data= data.replace(r'^\s*$', np.nan, regex=True)
+
+print('Number of missing values:')
+for col in data.columns:
+    print(f'\t{col}: {data[col].isna().sum()}')
 
