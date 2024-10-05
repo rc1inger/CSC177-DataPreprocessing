@@ -61,16 +61,20 @@ data3 = handle_missing_values(data3)
 
 # **Created a function to visualize missing values**
 def visualize_missing_values(df):
-    # Calculate and plot missing values count as a bar chart
+    # Calculate missing values count
     missing_values = df.isna().sum()
-    missing_values[missing_values > 0].plot(kind='bar', figsize=(10, 5))  # Only plot columns with missing values
-    plt.title('Missing Values Count')  # Title for the plot
-    plt.xlabel('Features')  # X-axis label
-    plt.ylabel('Count')  # Y-axis label
-    plt.show()  # Display the plot
-
-# Call the function to visualize missing values in the dataset
-visualize_missing_values(data3)
+    # Filter columns that have missing values
+    missing_values = missing_values[missing_values > 0]
+    
+    # If there are missing values, plot them; otherwise, print a message
+    if not missing_values.empty:
+        missing_values.plot(kind='bar', figsize=(10, 5))  # Plot only columns with missing values
+        plt.title('Missing Values Count')  # Title for the plot
+        plt.xlabel('Features')  # X-axis label
+        plt.ylabel('Count')  # Y-axis label
+        plt.show()  # Display the plot
+    else:
+        print("No missing values to visualize.")  # Message for no missing values
 
 # **Visualizing potential outliers using boxplots**
 data3.boxplot(figsize=(20, 3))  # Initial boxplot for visual inspection
