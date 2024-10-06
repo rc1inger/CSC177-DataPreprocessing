@@ -28,16 +28,44 @@ for _ in range(max_num_of_missing_values):
         df.iloc[rand_row, rand_col] = np.nan
         random_cells.append((rand_row, rand_col))
 
+def swap_column_values(df, num_swaps=5):
+    # Select random columns and rows to swap values
+    for _ in range(num_swaps):
+        col1, col2 = random.sample(list(df.columns), 2)
+        row = random.randint(0, len(df) - 1)
+        # Swap the values between the two columns in the same row
+        df.at[row, col1], df.at[row, col2] = df.at[row, col2], df.at[row, col1]
+    return df
+
+# Swap values between columns randomly
+num_swaps = random.randint(1, 10)
+df = swap_column_values(df, num_swaps)
+
+
 # Duplicate random rows
 for _ in range(max_num_of_duplicate_rows):
     if random.random() < 0.5:  # 50% chance to duplicate
         rand_row = random.randint(0, rows - 1)
-        duplicate_row = df.iloc[rand_row].copy()  # Copy to avoid reference issues
+        duplicate_row = df.iloc[rand_row].copy() 
 
         # Insert the duplicated row at a random position
-        insert_at = random.randint(0, rows)  # Include the last index
+        insert_at = random.randint(0, rows)  
         df = pd.concat([df.iloc[:insert_at], pd.DataFrame([duplicate_row]), df.iloc[insert_at:]]).reset_index(drop=True)
         duplicated_rows.append(insert_at)
+
+#Adding unusual inconsistencies which are easy to spot
+def create_logical_inconsistencies(df, n_inconsistencies=5):
+    inconsistent_cells = []  # Track modified cells
+    for _ in range(n_inconsistencies):
+        rand_row = random.randint(0, len(df) - 1)
+        # Creating an inconsistency: Age is unusually high but cholesterol is low
+        if 'age' in df.columns and 'chol' in df.columns:
+            df.at[rand_row, 'age'] = random.randint(80, 100)  # Unusually high age
+            df.at[rand_row, 'chol'] = random.randint(100, 150)  # Unusually low cholesterol
+            inconsistent_cells.append((rand_row, 'age'))
+            inconsistent_cells.append((rand_row, 'chol'))
+    return df, inconsistent_cells
+df, logical_inconsistencies = create_logical_inconsistencies(df, n_inconsistencies=10)
 
 # Save the modified DataFrame to a new CSV file
 df.to_csv('heart_disease.csv', index=False)
